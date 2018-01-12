@@ -19,6 +19,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -49,11 +50,17 @@ public class MainActivity extends AppCompatActivity {
      */
     public void onClickOpenAddressButton(View v) {
         // TODO (5) Store an address in a String
+        String addressString = "25 Canada St, VT";
+        // TODO (6) Use Uri.Builder with the appropriate scheme and query to form the Uri for the address
+        /* This code is broken. The builder replaces every non-safe character with its hex representation. */
+        Uri.Builder builder = new Uri.Builder();
 
-        // TODO (6) Use Uri.Builder with the appropriate scheme and appendQueryParameter to form the Uri for the address
+        builder.scheme("geo").path("0,0").appendQueryParameter("q",addressString);
+        Uri addressUri = builder.build();
 
-        // TODO (7) Replace the Toast with a call to showMap, passing in the Uri from the previous step
-        Toast.makeText(this, "TODO: Open a map when this button is clicked", Toast.LENGTH_SHORT).show();
+        //Testing
+        //Uri addressUri = Uri.parse("geo:0,0?q="+Uri.encode(addressString);
+        showMap(addressUri);
     }
 
     /**
@@ -113,12 +120,17 @@ public class MainActivity extends AppCompatActivity {
 
 
     // TODO (1) Create a method called showMap with a Uri as the single parameter
-    // Do steps 2 - 4 within the showMap method
+    void showMap(Uri mapUri) {
+        // Do steps 2 - 4 within the showMap method
+        Log.i("showMap",mapUri.toString());
         // TODO (2) Create an Intent with action type, Intent.ACTION_VIEW
-
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, mapUri);
         // TODO (3) Set the data of the Intent to the Uri passed into this method
 
         // TODO (4) Verify that this Intent can be launched and then call startActivity
-
+        if(mapIntent.resolveActivity(getPackageManager())!=null){
+            startActivity(mapIntent);
+        }
+    }
 
 }

@@ -15,4 +15,7 @@
   -->
 <resources>
     <string name="app_name">Github Query</string>
+    <string name="enter_your_query_for_github_here">Enter your query for Github here!</string>
+    <string name="search_results_will_appear_here">Search results will appear here</string>
+    <string name="please_search_first">Please search first.</string>
 </resources>

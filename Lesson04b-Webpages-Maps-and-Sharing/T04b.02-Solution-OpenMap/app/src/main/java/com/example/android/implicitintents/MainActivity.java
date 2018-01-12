@@ -61,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
         // COMPLETED (7) Replace the Toast with a call to showMap, passing in the Uri from the previous step
         showMap(addressUri);
     }
-	
 
     /**
      * This method is called when the Share Text Content button is clicked. It will simply share
