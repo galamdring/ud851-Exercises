@@ -25,11 +25,12 @@ import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.PreferenceScreen;
+import android.widget.EditText;
 import android.widget.Toast;
 
 
 public class SettingsFragment extends PreferenceFragmentCompat implements
-        OnSharedPreferenceChangeListener {
+        OnSharedPreferenceChangeListener, Preference.OnPreferenceChangeListener {
 
     @Override
     public void onCreatePreferences(Bundle bundle, String s) {
@@ -49,6 +50,9 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
             if (!(p instanceof CheckBoxPreference)) {
                 String value = sharedPreferences.getString(p.getKey(), "");
                 setPreferenceSummary(p, value);
+            }
+            if(p.getKey().equals(getString(R.string.pref_size_et_key))){
+                p.setOnPreferenceChangeListener(this);
             }
         }
     }
@@ -73,7 +77,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
      * @param value      The value that the preference was updated to
      */
     private void setPreferenceSummary(Preference preference, String value) {
-        // TODO (3) Don't forget to add code here to properly set the summary for an EditTextPreference
+        // complete (3) Don't forget to add code here to properly set the summary for an EditTextPreference
         if (preference instanceof ListPreference) {
             // For list preferences, figure out the label of the selected value
             ListPreference listPreference = (ListPreference) preference;
@@ -82,6 +86,13 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
                 // Set the summary to that label
                 listPreference.setSummary(listPreference.getEntries()[prefIndex]);
             }
+        } else if (preference instanceof EditTextPreference){
+            EditTextPreference etPref = ((EditTextPreference) preference);
+            String etValue = etPref.getText();
+            if(etValue!=null){
+                etPref.setSummary(etValue);
+            }
+
         }
     }
     
@@ -97,5 +108,28 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
         super.onDestroy();
         getPreferenceScreen().getSharedPreferences()
                 .unregisterOnSharedPreferenceChangeListener(this);
+    }
+
+    //only attached to the edit text preference, called before its saved to the shared prefs file, so we can validate input.
+    @Override
+    public boolean onPreferenceChange(Preference preference, Object newValue) {
+        Toast error = Toast.makeText(getContext(), "Please select a number between 0.1 and 3",Toast.LENGTH_SHORT);
+
+        String sizeKey = getString(R.string.pref_size_et_key);
+        if(preference.getKey().equals(sizeKey)){
+            String stringSize = ((String) (newValue)).trim();
+            if(stringSize==null) stringSize="1";
+            try{
+                Float size = Float.parseFloat(stringSize);
+                if(size >3 || size <=00){
+                    error.show();
+                    return false;
+                }
+            }catch(NumberFormatException ex){
+                error.show();
+                return false;
+            }
+        }
+        return true;
     }
 }

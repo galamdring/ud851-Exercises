@@ -42,32 +42,51 @@ public class VisualizerActivity extends AppCompatActivity implements SharedPrefe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_visualizer);
         mVisualizerView = (VisualizerView) findViewById(R.id.activity_visualizer);
         setupSharedPreferences();
         setupPermissions();
     }
 
-    // TODO (4) Update the code in setupSharedPreferences and onSharedPreferenceChanged to update
+    // complete (4) Update the code in setupSharedPreferences and onSharedPreferenceChanged to update
     // mVisualizerView to show the current values stored in shared preferences.
     private void setupSharedPreferences() {
         // Get all of the values from shared preferences to set it up
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         mVisualizerView.setShowBass(sharedPreferences.getBoolean(getString(R.string.pref_show_bass_key),
                 getResources().getBoolean(R.bool.pref_show_bass_default)));
-        mVisualizerView.setShowMid(true);
-        mVisualizerView.setShowTreble(true);
+        mVisualizerView.setShowMid(sharedPreferences.getBoolean(getString(R.string.pref_show_mid_key),getResources().getBoolean(R.bool.pref_show_mid_default)));
+        setShowTrebleFromPrefs(sharedPreferences);
         mVisualizerView.setMinSizeScale(1);
-        mVisualizerView.setColor(getString(R.string.pref_color_red_value));
+        setColorFromPrefs(sharedPreferences);
         // Register the listener
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
     }
+
+    private void setShowTrebleFromPrefs(SharedPreferences sharedPreferences) {
+        mVisualizerView.setShowTreble(sharedPreferences.getBoolean(getString(R.string.pref_show_treble_key),getResources().getBoolean(R.bool.pref_show_treble_default)));
+    }
+
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(getString(R.string.pref_show_bass_key))) {
             mVisualizerView.setShowBass(sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_show_bass_default)));
         }
+        else if(key.equals(getString(R.string.pref_show_mid_key))){
+            mVisualizerView.setShowMid(sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_show_mid_default)));
+        }
+        else if(key.equals(getString(R.string.pref_show_treble_key))){
+            setShowTrebleFromPrefs(sharedPreferences);
+        }
+        else if(key.equals(getString(R.string.pref_color_key))){
+            setColorFromPrefs(sharedPreferences);
+        }
+    }
+
+    public void setColorFromPrefs(SharedPreferences sharedPreferences){
+        mVisualizerView.setColor(sharedPreferences.getString(getString(R.string.pref_color_key),getString(R.string.pref_color_red_value)));
     }
 
     @Override
