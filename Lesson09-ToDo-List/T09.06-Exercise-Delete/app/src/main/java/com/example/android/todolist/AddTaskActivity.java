@@ -54,6 +54,8 @@ public class AddTaskActivity extends AppCompatActivity {
         // If the EditText input is empty -> don't create an entry
         String input = ((EditText) findViewById(R.id.editTextTaskDescription)).getText().toString();
         if (input.length() == 0) {
+            //We need to tell the user why we aren't doing anything.
+            Toast.makeText(this, "Please enter a description.", Toast.LENGTH_SHORT).show();
             return;
         }
 
